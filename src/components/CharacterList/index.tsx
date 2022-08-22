@@ -55,12 +55,8 @@ const CharacterList: React.FC = () => {
 
   const list = useMemo(
     () =>
-      isLoading ? (
-        <Loader />
-      ) : (
-        characterList?.results.map((character) => <CharacterCard characterName={character.name} url={character.url} />)
-      ),
-    [characterList?.results, isLoading]
+      characterList?.results.map((character) => <CharacterCard characterName={character.name} url={character.url} />),
+    [characterList?.results]
   );
 
   const foundCard = useMemo(
@@ -81,8 +77,18 @@ const CharacterList: React.FC = () => {
 
   return (
     <Container>
-      <Search value={searchValue} onChange={(e) => setSearchValue(e.target.value)} placeholder="Enter character name" />
-      <Content>{searchValue ? foundCard : list}</Content>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <Search
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            placeholder="Enter character name"
+          />
+          <Content>{searchValue ? foundCard : list}</Content>
+        </>
+      )}
     </Container>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 
@@ -6,6 +6,7 @@ import { px } from '@src/styles/utils';
 import paths from '@src/pages/paths';
 import theme from '@src/styles/theme';
 import Text from '@src/components/common/Text';
+import { getId } from '@src/utils';
 
 type Props = {
   characterName: string;
@@ -48,28 +49,12 @@ const Card = styled(Link)`
   }
 `;
 
-const CharacterCard: React.FC<Props> = ({ characterName, url }: Props) => {
-  const getId = useCallback((url: string) => {
-    const expression = /^((http[s]):\/)?\/?([^:/\s]+)((\/\w+)*\/)([\w\-.]+[^#?\s]+)(.*)?(#[\w-]+)?$/;
-    const regex = new RegExp(expression);
-
-    const res = url.match(regex);
-
-    return res;
-  }, []);
-
-  return (
-    <Card
-      key={url}
-      to={paths.character(
-        (getId(url) as RegExpMatchArray)[6].substring(0, (getId(url) as RegExpMatchArray)[6].length - 1)
-      )}
-    >
-      <Name variant="title" bold>
-        {characterName}
-      </Name>
-    </Card>
-  );
-};
+const CharacterCard: React.FC<Props> = ({ characterName, url }: Props) => (
+  <Card key={url} to={paths.character(getId(url))}>
+    <Name variant="title" bold>
+      {characterName}
+    </Name>
+  </Card>
+);
 
 export default CharacterCard;

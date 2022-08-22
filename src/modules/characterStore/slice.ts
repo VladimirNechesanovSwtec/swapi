@@ -46,6 +46,10 @@ const character = createSlice({
       state.characterById.data = payload;
     },
     requestCharacterByIdFailed: (state, action) => loadingFailed(state.characterById, action),
+
+    resetCharacter: (state) => {
+      state.characterById = initialState.characterById;
+    },
   },
 });
 
@@ -56,6 +60,7 @@ export const {
   requestCharacterByIdStart,
   requestCharacterByIdSuccess,
   requestCharacterByIdFailed,
+  resetCharacter,
 } = character.actions;
 
 export default character.reducer;

@@ -2,7 +2,7 @@
 
 const MAX_COUNT_OF_STARS = 800;
 
-const setNightSky = (elementId: string) => {
+export const setNightSky = (elementId: string) => {
   const elem = document.getElementById(elementId);
 
   for (let i = 0; i < MAX_COUNT_OF_STARS; i++) {
@@ -19,4 +19,11 @@ const setNightSky = (elementId: string) => {
   }
 };
 
-export default setNightSky;
+export const getId = (url: string) => {
+  const expression = /^((http[s]):\/)?\/?([^:/\s]+)((\/\w+)*\/)([\w\-.]+[^#?\s]+)(.*)?(#[\w-]+)?$/;
+  const regex = new RegExp(expression);
+
+  const res = url.match(regex);
+
+  return (res as RegExpMatchArray)[6].substring(0, (res as RegExpMatchArray)[6].length - 1);
+};

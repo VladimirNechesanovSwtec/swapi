@@ -25,3 +25,20 @@ export interface CharacterList {
   previous: string | null;
   results: Character[];
 }
+
+export interface Film {
+  characters: string[];
+  created: string;
+  director: string;
+  edited: string;
+  episode_id: 4;
+  opening_crawl: string;
+  planets: string[];
+  producer: string;
+  release_date: string;
+  species: string[];
+  starships: string[];
+  title: string;
+  url: string;
+  vehicles: string[];
+}

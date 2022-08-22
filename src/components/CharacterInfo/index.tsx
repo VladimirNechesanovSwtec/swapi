@@ -1,11 +1,14 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import _last from 'lodash/last';
 
+import { getCharacterById, useCharacterByIdState, resetCharacter } from '@src/modules/characterStore';
+import { getFilmsList, resetFilmStore, useFilmsState } from '@src/modules/filmsStore';
+
 import { px } from '@src/styles/utils';
-import { getCharacterById, useCharacterByIdState } from '@src/modules/characterStore';
 import Text from '@src/components/common/Text';
 import theme from '@src/styles/theme';
 import { Config } from '@src/models/models';
@@ -42,6 +45,19 @@ const InfoItem = styled.div`
   flex-direction: row;
 `;
 
+const FilmSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: ${px(24)};
+`;
+
+const FilmSectionTitle = styled(Text)`
+  color: ${theme.colors.casablanca};
+  font-size: ${px(90)};
+  justify-content: flex-start;
+`;
+
 const InfoItemTitle = styled(Text)`
   color: ${theme.colors.casablanca};
   min-width: ${px(230)};
@@ -72,11 +88,22 @@ const CharacterName = styled(Text)`
   transform: rotateX(40deg) translateZ(0);
 `;
 
+const ShowFilms = styled(Text)`
+  font-size: ${px(15)};
+  font-weight: 100;
+  color: ${theme.colors.grayText};
+  cursor: pointer;
+  padding-top: ${px(8)};
+`;
+
 const CharacterInfo: React.FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { data: character, isLoading } = useCharacterByIdState();
+  const { data: films, isLoading: isFilmsLoading } = useFilmsState();
+
   const [config, setConfig] = useState<Config[]>([]);
+  const [isFilmVisible, setFilmVisibility] = useState(false);
 
   useEffect(() => {
     const path = history.location.pathname.split('/');
@@ -87,8 +114,24 @@ const CharacterInfo: React.FC = () => {
   useEffect(() => {
     if (!character) return;
 
+    if (isFilmVisible) {
+      dispatch(getFilmsList(character.films));
+    }
+  }, [character, dispatch, isFilmVisible]);
+
+  useEffect(() => {
+    if (!character) return;
+
     setConfig(prepareConfig(character));
   }, [character]);
+
+  useEffect(
+    () => () => {
+      dispatch(resetFilmStore());
+      dispatch(resetCharacter());
+    },
+    [dispatch]
+  );
 
   const title = useMemo(
     () => (
@@ -119,6 +162,32 @@ const CharacterInfo: React.FC = () => {
     [config]
   );
 
+  const filmSection = useMemo(
+    () => (
+      <FilmSection>
+        <FilmSectionTitle variant="title" bold>
+          films
+        </FilmSectionTitle>
+        {isFilmVisible ? (
+          isFilmsLoading ? (
+            <Loader />
+          ) : (
+            <InfoItem>
+              {films.map((film) => (
+                <InfoItemValue variant="title" bold>
+                  {film.title},
+                </InfoItemValue>
+              ))}
+            </InfoItem>
+          )
+        ) : (
+          <ShowFilms onClick={() => setFilmVisibility(true)}>click to show films</ShowFilms>
+        )}
+      </FilmSection>
+    ),
+    [films, isFilmVisible, isFilmsLoading]
+  );
+
   return (
     <Container>
       {isLoading ? (
@@ -127,6 +196,7 @@ const CharacterInfo: React.FC = () => {
         <Content>
           {title}
           {commonInfo}
+          {filmSection}
         </Content>
       )}
     </Container>

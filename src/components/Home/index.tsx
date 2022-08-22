@@ -4,7 +4,7 @@ import styled, { keyframes } from 'styled-components';
 import { px } from '@src/styles/utils';
 import theme from '@src/styles/theme';
 import Text from '@src/components/common/Text';
-import setNightSky from '@src/utils';
+import { setNightSky } from '@src/utils';
 
 const textMovement = keyframes`
   from {
