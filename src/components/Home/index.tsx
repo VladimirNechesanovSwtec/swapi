@@ -18,7 +18,7 @@ const textMovement = keyframes`
 `;
 
 const Container = styled.div`
-  height: 100%;
+  height: 100vh;
   width: 100vw;
   background-color: ${theme.colors.black};
   display: flex;
